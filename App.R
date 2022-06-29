@@ -30,7 +30,7 @@ suppressMessages({
 # Import Data Sets   =====================================
 
 # Set working directory
-Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/"
+#Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/"
 
 #Census_path <- "/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/"
 #setwd(Census_path)
@@ -38,8 +38,8 @@ Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimizatio
 
 
 # Read the census repo file containing the MSSN data
-covid_data <- read_excel(paste0(Census_path, "Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
-#covid_data <- read_excel(paste0("/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
+#covid_data <- read_excel(paste0(Census_path, "Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
+covid_data <- read_excel(paste0("/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
 
 max(covid_data$CensusDate)
 
