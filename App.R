@@ -543,7 +543,7 @@ server <- function(input, output, session) {
           covid_pts_trend <- aggregate(covid_pts_trend$value, by=list(covid_pts_trend$CensusDate,covid_pts_trend$variable), FUN=sum)
           colnames(covid_pts_trend) <- c("CensusDate","Patient Type","value")
           
-          
+       
           
           ##  year over year comparison by infection status
           covid_pts_trend_avg <- covid_pts_trend %>% mutate(year= substr(CensusDate, 1, 4),
@@ -562,7 +562,7 @@ server <- function(input, output, session) {
           covid_census_max <- covid_pts_trend_avg %>% group_by(year, month) %>% summarise(sum = sum(Average))
           
           ggplot(covid_pts_trend_avg, 
-                 aes(x=month, y=Average, fill=factor(year,levels=c("2020","2021","2022"))))+
+                 aes(x=month, y=Average, fill= year))+
             geom_bar(position=position_dodge(),stat="identity", width=0.7)+
             scale_fill_manual(values=c("#d80b8c",	"#00aeef","#863198","#212070"))+
             ggtitle(label="\nAverage Daily COVID-19 Patient Census by Year")+
@@ -619,7 +619,7 @@ server <- function(input, output, session) {
           
           
           ggplot(covid_pts_avg, 
-                 aes(x=month, y=Average, fill=factor(year,levels=c("2020","2021","2022"))))+
+                 aes(x=month, y=Average, fill= year))+
             geom_bar(position=position_dodge(),stat="identity", width=0.7)+
             scale_fill_manual(values=c("#d80b8c",	"#00aeef","#863198","#212070"))+
             ggtitle(label="\nAverage Daily COVID-19 Patient Census by Year")+
@@ -927,7 +927,7 @@ server <- function(input, output, session) {
         covid_pts_trend_max_site <- covid_trend_site_avg %>% group_by(year, month) %>% summarise(sum = sum(Average))
           
         ggplot(covid_trend_site_avg, 
-                 aes(x=month, y=Average, fill=factor(year,levels=c("2020","2021","2022"))))+
+                 aes(x=month, y=Average, fill= year))+
             geom_bar(position=position_dodge(),stat="identity", width=0.7)+
             scale_fill_manual(values=c("#d80b8c",	"#00aeef","#863198","#212070"))+
             ggtitle(label="\nAverage Daily COVID-19 Patient Census by Year")+
@@ -979,7 +979,7 @@ server <- function(input, output, session) {
           covid_census_max_site <- covid_pts_site_avg %>%  group_by(month, year) %>% summarise(sum = sum(Average))
           
         ggplot(covid_pts_site_avg, 
-                 aes(x=month, y=Average, fill=factor(year,levels=c("2020","2021","2022"))))+
+                 aes(x=month, y=Average, fill= year))+
             geom_bar(position=position_dodge(),stat="identity", width=0.7)+
             scale_fill_manual(values=c("#d80b8c",	"#00aeef","#863198","#212070"))+
             ggtitle(label="\nAverage Daily COVID-19 Patient Census by Year")+
