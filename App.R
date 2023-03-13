@@ -31,9 +31,8 @@ suppressMessages({
 
 # Set working directory
 #Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/"
-
 Census_path <- "/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/"
-#setwd(Census_path)
+
 
 dates_pattern <-  seq(Sys.Date()-5, Sys.Date(), by='day')
 
