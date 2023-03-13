@@ -30,18 +30,22 @@ suppressMessages({
 # Import Data Sets   =====================================
 
 # Set working directory
-#Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/"
+#Census_path <- "J:/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/"
 
-#Census_path <- "/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/"
+Census_path <- "/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/"
 #setwd(Census_path)
 
-
+dates_pattern <-  seq(Sys.Date()-5, Sys.Date(), by='day')
 
 # Read the census repo file containing the MSSN data
 #covid_data <- read_excel(paste0(Census_path, "Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
-covid_data <- read_excel(paste0("/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
+#covid_data <- read_excel(paste0("/SharedDrive/deans/Presidents/HSPI-PM/Operations Analytics and Optimization/Projects/System Operations/Covid IP Staffing Model/Data/Epic Census Data/REPO/Census and Covid Repo 2020-03-12 to ", Sys.Date()-1, " Created ", Sys.Date(), " Add MSSN.xlsx"))
 
-max(covid_data$CensusDate)
+
+repo <- file.info(list.files(path = paste0(Census_path,"/REPO"), full.names = T , pattern =paste0("Census and Covid Repo 2020-03-12 to ", dates_pattern, collapse = "|"  )))
+repo_file <- rownames(repo)[which.max(repo$ctime)]
+covid_data <- read_excel(repo_file)
+
 
 # Report Update date
 repo_start_date <- format(min(covid_data$CensusDate), "%m-%d-%Y")
@@ -49,7 +53,7 @@ repo_end_date <- format(max(covid_data$CensusDate), "%m-%d-%Y")
 
 report_run_date <- Sys.Date()
 
-start_date <- Sys.Date()-months(3)
+start_date <- Sys.Date()- months(3)
 
 
 ## MSHS =====================================
@@ -94,8 +98,9 @@ ui <- dashboardPage(
                    column(12, 
                           tags$div("MSHS Census and Utilization Analysis", style = "color:	#221f72; font-weight:bold; font-size:34px; margin-left: 20px" ,
                                 h3("Health System Operations"),
-                                h4(paste0("Report Run Date: ",report_run_date )),
-                                h4(paste0("Data Date Range: ",repo_start_date, " to ",repo_end_date )))),
+                                h4(paste0("Report Run Date: ", report_run_date)),
+                                h4(paste0("Last Updated Date: ", repo_end_date)),
+                                h4(paste0("Data Date Range: ", repo_start_date, " to ", repo_end_date)))),
               
               
                    column(12, 
@@ -147,7 +152,7 @@ ui <- dashboardPage(
                          fluidRow(
                            column(width = 5, offset = 1, 
                                dateRangeInput("DateRange", label = NULL, width = "75%",
-                                              start = start_date, end = Sys.Date()-1,
+                                              start = start_date, end = max(covid_data$CensusDate),
                                               min = min(covid_data$CensusDate), max = max(covid_data$CensusDate))),
                            
                            column(width= 5, offset = 1,
@@ -219,7 +224,7 @@ ui <- dashboardPage(
                            box(width = 6, height = "100px",
                                title = "Select Date Range:",  solidHeader = FALSE, 
                                dateRangeInput("DateRange1", label = NULL, width = "75%",
-                                              start = start_date, end = Sys.Date()-1,
+                                              start = start_date, end = max(covid_data$CensusDate),
                                               min = min(covid_data$CensusDate), max = max(covid_data$CensusDate))),
                            
                            
