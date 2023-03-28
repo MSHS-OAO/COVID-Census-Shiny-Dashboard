@@ -50,7 +50,7 @@ covid_data <- read_excel(repo_file)
 repo_start_date <- format(min(covid_data$CensusDate), "%m-%d-%Y")
 repo_end_date <- format(max(covid_data$CensusDate), "%m-%d-%Y")
 
-report_run_date <- Sys.Date()
+report_run_date <- format(max(Sys.Date()), "%m-%d-%Y")
 
 start_date <- Sys.Date()- months(3)
 
