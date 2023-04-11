@@ -49,10 +49,104 @@ covid_data <- read_excel(repo_file)
 # Report Update date
 repo_start_date <- format(min(covid_data$CensusDate), "%m-%d-%Y")
 repo_end_date <- format(max(covid_data$CensusDate), "%m-%d-%Y")
-
+last_updated_date <- format(max(as.Date(covid_data$CensusDate)+1), "%m-%d-%Y")
 report_run_date <- format(max(Sys.Date()), "%m-%d-%Y")
 
 start_date <- Sys.Date()- months(3)
+
+## # Mount Sinai corporate colors 
+MountSinai_colors <- c(
+  `dark purple`  = "#212070",
+  `dark pink`    = "#d80b8c",
+  `dark blue`    = "#00aeef",
+  `dark grey`    = "#7f7f7f",
+  `yellow`       = "#ffc000",
+  `purple`       = "#7030a0",
+  `med purple`   = "#5753d0",
+  `med pink`     = "#f75dbe",
+  `med blue`     = "#5cd3ff",
+  `med grey`     = "#a5a7a5",
+  `light purple` = "#c7c6ef",
+  `light pink`   = "#fcc9e9",
+  `light blue`   = "#c9f0ff",
+  `light grey`   = "#dddedd",
+  `Cetacean Blue`= "#00002D"
+)
+
+# Function to extract Mount Sinai colors as hex codes
+# Use Character names of MountSinai_colors
+
+MountSinai_cols <- function(...) {
+  cols <- c(...)
+  
+  if (is.null(cols))
+    return (MountSinai_colors)
+  
+  MountSinai_colors[cols]
+}
+
+# Create palettes 
+MountSinai_palettes <- list(
+  `all`   = MountSinai_cols("dark purple","dark pink","dark blue","dark grey",
+                            "med purple","med pink","med blue","med grey", 
+                            "light purple","light pink","light blue","light grey"),
+  
+  `dark`  = MountSinai_cols("dark pink", "dark grey", "Cetacean Blue",
+                            "med pink","dark purple","dark blue",
+                            "med purple","med grey","med blue", "yellow" ),
+  
+  `main`  = MountSinai_cols("dark purple","dark grey","dark pink","dark blue",
+                            "med purple","med pink","med blue","med grey"),
+  
+  `purple`  = MountSinai_cols("dark purple","med purple","light purple"),
+  
+  `pink`  = MountSinai_cols("dark pink","med pink","light pink"),
+  
+  `blue`  = MountSinai_cols("dark blue", "med blue", "light blue"),
+  
+  `grey`  = MountSinai_cols("dark grey", "med grey", "light grey"),
+  
+  `purpleGrey` = MountSinai_cols("dark purple", "dark grey"),
+  
+  `pinkBlue` = MountSinai_cols("dark pink", "dark blue")
+  
+)
+
+# MountSinai_palettes
+# Return function to interpolate a Mount Sinai color palette
+# default value is the main palette, reverse = True will change the order
+
+MountSinai_pal <- function(palette = "all", reverse = FALSE, ...) {
+  pal <- MountSinai_palettes[[palette]]
+  
+  if (reverse) pal <- rev(pal)
+  
+  colorRampPalette(pal, ...)
+}
+
+
+# Scale Function for ggplot can be used instead of scale_color_manual
+scale_color_MountSinai <- function(palette = "all", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- MountSinai_pal(palette = palette, reverse = reverse)
+  
+  if (discrete) {
+    discrete_scale("colour", paste0("MountSinai_", palette), palette = pal, ...)
+  } else {
+    scale_color_gradientn(colours = pal(256), ...)
+  }
+}
+
+# Scale Fill for ggplot insetead of scale_fill_manual 
+scale_fill_MountSinai <- function(palette = "all", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- MountSinai_pal(palette = palette, reverse = reverse)
+  
+  if (discrete) {
+    discrete_scale("fill", paste0("MountSinai_", palette), palette = pal, ...)
+  } else {
+    scale_fill_gradientn(colours = pal(256), ...)
+  }
+}
+
 
 
 ## MSHS =====================================
@@ -97,8 +191,8 @@ ui <- dashboardPage(
                    column(12, 
                           tags$div("MSHS Census and Utilization Analysis", style = "color:	#221f72; font-weight:bold; font-size:34px; margin-left: 20px" ,
                                 h3("Health System Operations"),
-                                h4(paste0("Report Run Date: ", report_run_date)),
-                                h4(paste0("Last Updated Date: ", repo_end_date)),
+                                #h4(paste0("Report Run Date: ", report_run_date)),
+                                h4(paste0("Last Updated Date: ", last_updated_date)),
                                 h4(paste0("Data Date Range: ", repo_start_date, " to ", repo_end_date)))),
               
               
@@ -568,6 +662,7 @@ server <- function(input, output, session) {
           ggplot(covid_pts_trend_avg, 
                  aes(x=month, y=Average, fill= year))+
             geom_bar(position=position_dodge(),stat="identity", width=0.7)+
+            #scale_fill_MountSinai("all")+
             scale_fill_manual(values=c("#d80b8c",	"#00aeef","#863198","#212070"))+
             ggtitle(label="\nAverage Daily COVID-19 Patient Census by Year")+
             labs(x=NULL, y="Beds Occupied", caption = paste0( "\n*The current month includes data till ", Sys.Date()-1))+
